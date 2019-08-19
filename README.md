@@ -42,6 +42,10 @@ pau
 
 ## Limitations
 
+Those dang limitations:
+* Script only sends 1 line up to 8 characters at a time
+* Message must be in quotes if there are spaces in the message e.g "my msg"
+* Longer messages (than 8 chars) will be truncated to 8 characters
 
 ## Why Shell Script
 
