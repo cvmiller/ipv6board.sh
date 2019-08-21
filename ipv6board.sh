@@ -27,10 +27,12 @@
 #		provide feedback on number of chars input
 #		
 #		
-VERSION=0.95
+VERSION=0.96
 
 usage () {
                echo "	$0 - write messages to ipv6board with ping6 "
+	       echo "		https://ipv6board.best-practice.se/	"
+	       echo "	"
 	       echo "	e.g. $0 \"my msg\" "
 	       echo "	-h  this help"
 	       echo "	"
@@ -38,6 +40,15 @@ usage () {
 	       exit 1
            }
 
+# check OS type (BSD or Linux)
+OS=""
+OS=$(uname -s)
+if [ "$OS" = "Darwin" ] || [ "$OS" = "FreeBSD" ]; then
+	# MacOS X/BSD compatibility
+	ping_opts="-c 1 -i 1 "
+else
+	ping_opts="-c 1 -w 1 "
+fi
 
 # Initialize vars
 space=" "
@@ -64,10 +75,13 @@ done
 # convert message to ascii using hexdump and awk to format into IID address
 msghex=$(echo "$msg" | hexdump -C | head -1 | awk '{print $2$3":"$4$5":"$6$7":"$8$9}')
 
-#debug echo
-#echo "ping6 $prefix$msghex"
-
-#ping the ipv6board with message
-ping6 -c 1 -w 1 "$prefix$msghex"
+# debug using -d as second parameter
+if [ "$2" = "-d" ]; then
+	#debug echo
+	echo "ping6 $ping_opts $prefix$msghex"
+else
+	#ping the ipv6board with message
+	ping6 $ping_opts "$prefix$msghex"
+fi
 
 echo "pau"
